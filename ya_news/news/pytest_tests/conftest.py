@@ -31,11 +31,13 @@ def not_author_client(not_author):
     client.force_login(not_author)
     return client
 
+
 @pytest.fixture
 @pytest.mark.django_db
 def news():
     news = News.objects.create(title='Заголовок', text='Текст')
     return news
+
 
 @pytest.fixture
 def comment(author, news):
@@ -45,6 +47,7 @@ def comment(author, news):
         text='Текст комментария'
     )
     return comment
+
 
 @pytest.fixture
 @pytest.mark.django_db
@@ -59,6 +62,7 @@ def news_11():
         )
         all_news.append(news)
     return all_news
+
 
 @pytest.fixture
 @pytest.mark.django_db
