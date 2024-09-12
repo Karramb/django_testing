@@ -7,6 +7,7 @@ from django.urls import reverse
 from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
 
+
 COMMENT_TEXT = 'Текст комментария'
 NEW_COMMENT_TEXT = 'Обновлённый комментарий'
 
@@ -53,6 +54,7 @@ def test_author_can_delete_comment(author_client, comment, news):
     assertRedirects(response, news_url + '#comments')
     comments_count = Comment.objects.count()
     assert comments_count == 0
+
 
 def test_user_cant_delete_comment_of_another_user(not_author_client, comment):
     response = not_author_client.delete(reverse(
