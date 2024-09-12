@@ -3,8 +3,6 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from pytils.translit import slugify
 
-from notes.forms import NoteForm
-from notes.forms import WARNING
 from notes.models import Note
 
 
