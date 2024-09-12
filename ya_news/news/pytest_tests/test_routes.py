@@ -14,11 +14,13 @@ def test_pages_availability_for_anonymous_user(client, name):
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
 
+
 @pytest.mark.django_db
 def test_news_availability_for_anonymous_user(client, news):
     url = reverse('news:detail', args=(news.id,))
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
+
 
 @pytest.mark.parametrize(
     'parametrized_client, expected_status',
@@ -38,6 +40,7 @@ def test_edit_and_delete_pages_availability_for_user(
     response = parametrized_client.get(url)
     assert response.status_code == expected_status
 
+
 @pytest.mark.parametrize(
     'name',
     ('news:edit', 'news:delete')
@@ -46,6 +49,7 @@ def test_not_author_cant_edir_delete_comment(not_author_client, name, comment):
     url = reverse(name, args=(comment.id,))
     response = not_author_client.get(url)
     assert response.status_code == HTTPStatus.NOT_FOUND
+
 
 @pytest.mark.parametrize(
     'name',
