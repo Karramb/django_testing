@@ -8,6 +8,7 @@ from news.forms import CommentForm
 
 HOME_URL = reverse('news:home')
 
+
 @pytest.mark.django_db
 def test_news_count(client, news_11):
     response = client.get(HOME_URL)
