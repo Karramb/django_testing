@@ -4,6 +4,7 @@ from pytest_django.asserts import assertRedirects
 
 from django.urls import reverse
 
+
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     'name',
@@ -45,7 +46,10 @@ def test_edit_and_delete_pages_availability_for_user(
     'name',
     ('news:edit', 'news:delete')
 )
-def test_not_author_cant_edir_delete_comment(not_author_client, name, comment):
+def test_not_author_cant_edir_delete_comment(
+    not_author_client,
+    name, comment
+):
     url = reverse(name, args=(comment.id,))
     response = not_author_client.get(url)
     assert response.status_code == HTTPStatus.NOT_FOUND
