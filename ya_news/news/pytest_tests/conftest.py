@@ -52,7 +52,7 @@ def comment(author, news):
 @pytest.mark.django_db
 def news_11():
     for _ in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1):
-        news = News.objects.create(
+        News.objects.create(
             title='Заголовок',
             text='Текст',
         )
@@ -61,14 +61,12 @@ def news_11():
 @pytest.fixture
 @pytest.mark.django_db
 def comments(author, news):
-    all_comment = []
     for _ in range(2):
-        comment = Comment.objects.create(
+        Comment.objects.create(
             news=news,
             author=author,
             text='text_comment'
         )
-    return comment
 
 
 @pytest.fixture
