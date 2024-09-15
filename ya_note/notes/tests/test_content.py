@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
@@ -14,6 +14,10 @@ class TestContent(TestCase):
     def setUpTestData(cls):
         cls.author = User.objects.create(username='Лев Толстой')
         cls.reader = User.objects.create(username='Чел Простой')
+        cls.auth_client = Client()
+        cls.auth_client.force_login(cls.author)
+        cls.reader_client = Client()
+        cls.reader_client.force_login(cls.reader)
         cls.note = Note.objects.create(
             title='Тест',
             text='Тест',
@@ -25,18 +29,26 @@ class TestContent(TestCase):
         cls.NOTE_LIST = reverse('notes:list')
 
     def test_authorized_client_has_form(self):
-        self.client.force_login(self.author)
-        for name in (self.CREATE_URL, self.EDIT_NOTE):
-            response = self.client.get(name)
-            self.assertIn('form', response.context)
-            self.assertIsInstance(response.context['form'], NoteForm)
+        """Форма создания заметки есть у авторизованного юзера."""
+        urls = (self.CREATE_URL, self.EDIT_NOTE)
+        for url in urls:
+            with self.subTest():
+                response = self.auth_client.get(url)
+                self.assertIn('form', response.context)
+                self.assertIsInstance(response.context['form'], NoteForm)
 
     def test_note_in_list_context(self):
-        self.client.force_login(self.author)
-        response = self.client.get(self.NOTE_LIST)
+        """Заметка есть в контексте на странице списка заметок."""
+        response = self.auth_client.get(self.NOTE_LIST)
+        self.assertEqual(Note.objects.filter(author=self.author).count(), 1)
+        note_for_test = Note.objects.filter(author=self.author).last()
         self.assertIn(self.note, response.context['object_list'])
+        self.assertEqual(note_for_test.title, self.note.title)
+        self.assertEqual(note_for_test.text, self.note.text)
+        self.assertEqual(note_for_test.slug, self.note.slug)
 
-    def test_not_in_the_left_list(self):
-        self.client.force_login(self.reader)
-        response = self.client.get(self.NOTE_LIST)
+    def test_note_in_the_left_list(self):
+        """Чужие заметки не попадают на страницу пользователя."""
+        response = self.reader_client.get(self.NOTE_LIST)
         self.assertNotIn(self.note, response.context['object_list'])
+        self.assertEqual(Note.objects.filter(author=self.reader).count(), 0)
