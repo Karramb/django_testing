@@ -5,6 +5,8 @@ from news.forms import CommentForm
 
 
 pytestmark = pytest.mark.django_db
+
+
 def test_news_count(client, home_url, news_11):
     """На главной работает пагинация."""
     response = client.get(home_url)
@@ -13,7 +15,6 @@ def test_news_count(client, home_url, news_11):
     assert news_count == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
-pytestmark = pytest.mark.django_db
 def test_news_order(client, home_url, news_11):
     """Новости отсортированы в правильном порядке."""
     response = client.get(home_url)
@@ -23,7 +24,6 @@ def test_news_order(client, home_url, news_11):
     assert all_dates == sorted_dates
 
 
-pytestmark = pytest.mark.django_db
 def test_comments_order(client, comments, detail_url, news):
     """Комментарии отсортированы в правильном порядке."""
     response = client.get(detail_url)
@@ -34,7 +34,6 @@ def test_comments_order(client, comments, detail_url, news):
     assert all_timestamps == sorted_timestamps
 
 
-pytestmark = pytest.mark.django_db
 def test_anonymous_client_has_no_form(client, detail_url, news):
     """У анонима нет формы комментария."""
     response = client.get(detail_url)
