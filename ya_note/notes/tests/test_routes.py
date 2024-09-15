@@ -47,7 +47,6 @@ class TestRoutes(TestCase):
         cls.all_urls = cls.urls_for_authorized_user + cls.urls_for_all
         cls.LOGIN_URL = reverse('users:login')
 
-
     def test_for_author(self):
         """Автор может зайти на все страницы."""
         for url in self.all_urls:
