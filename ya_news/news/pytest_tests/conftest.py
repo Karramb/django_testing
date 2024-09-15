@@ -1,9 +1,10 @@
 import pytest
-
 from datetime import datetime, timedelta
+
 from django.conf import settings
 from django.test.client import Client
 from django.utils import timezone
+from django.urls import reverse
 
 from news.models import Comment, News
 
@@ -52,29 +53,55 @@ def comment(author, news):
 @pytest.fixture
 @pytest.mark.django_db
 def news_11():
-    all_news = []
-    today = datetime.today()
     for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1):
         news = News.objects.create(
             title='Заголовок',
             text='Текст',
-            date=today - timedelta(days=index)
         )
-        all_news.append(news)
-    return all_news
 
 
 @pytest.fixture
 @pytest.mark.django_db
 def comments(author, news):
-    all_comments = []
-    now = timezone.now()
     for index in range(2):
         comment = Comment.objects.create(
             news=news,
             author=author,
             text='text_comment'
         )
-        comment.created = now + timedelta(days=index)
-        all_comments.append(comment)
-    return all_comments
+
+@pytest.fixture
+def comment_text():
+    return 'Текст комментария'
+
+@pytest.fixture
+def new_comment_text():
+    return 'Обновлённый комментарий'
+
+@pytest.fixture
+def home_url():
+    return reverse('news:home', None)
+
+@pytest.fixture
+def detail_url(news):
+    return reverse('news:detail', args=(news.id,))
+
+@pytest.fixture
+def news_delete(comment):
+    return reverse('news:delete', args=(comment.id,))
+
+@pytest.fixture
+def news_edit(comment):
+    return reverse('news:edit', args=(comment.id,))
+
+@pytest.fixture
+def users_login():
+    return reverse('users:login', None)
+
+@pytest.fixture
+def users_logout():
+    return reverse('users:logout', None)
+
+@pytest.fixture
+def users_signup():
+    return reverse('users:signup', None)
