@@ -9,6 +9,8 @@ from news.models import Comment
 
 
 pytestmark = pytest.mark.django_db
+
+
 def test_anonymous_user_cant_create_comment(client, news, comment_text):
     """Аноним не может оставить комментарий."""
     comments_count = Comment.objects.count()
@@ -19,7 +21,6 @@ def test_anonymous_user_cant_create_comment(client, news, comment_text):
     assert comments_count == comments_count_after_request
 
 
-pytestmark = pytest.mark.django_db
 def test_user_can_create_comment(author, author_client, news, comment_text):
     """Авторизованный юзер может оставить комментарий."""
     comments_count = Comment.objects.count()
@@ -35,7 +36,6 @@ def test_user_can_create_comment(author, author_client, news, comment_text):
     assert comment.news == news
 
 
-pytestmark = pytest.mark.django_db
 def test_user_cant_use_bad_words(author_client, news):
     """В комментариях нельзя использовать запрещенные слова."""
     comments_count = Comment.objects.count()
