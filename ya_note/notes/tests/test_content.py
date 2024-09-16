@@ -40,15 +40,16 @@ class TestContent(TestCase):
     def test_note_in_list_context(self):
         """Заметка есть в контексте на странице списка заметок."""
         response = self.auth_client.get(self.NOTE_LIST)
-        self.assertEqual(Note.objects.filter(author=self.author).count(), 1)
-        note_for_test = Note.objects.filter(author=self.author).last()
-        self.assertIn(self.note, response.context['object_list'])
+        object_list = response.context['object_list']
+        note_for_test = object_list[0]
+        self.assertEqual(object_list.filter(author=self.author).count(), 1)
         self.assertEqual(note_for_test.title, self.note.title)
         self.assertEqual(note_for_test.text, self.note.text)
         self.assertEqual(note_for_test.slug, self.note.slug)
+        self.assertEqual(note_for_test.author, self.author)
 
     def test_note_in_the_left_list(self):
         """Чужие заметки не попадают на страницу пользователя."""
         response = self.reader_client.get(self.NOTE_LIST)
-        self.assertNotIn(self.note, response.context['object_list'])
-        self.assertEqual(Note.objects.filter(author=self.reader).count(), 0)
+        object_list = response.context['object_list']
+        self.assertEqual(object_list.count(), 0)
