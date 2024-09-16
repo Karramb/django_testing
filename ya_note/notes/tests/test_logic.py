@@ -107,6 +107,11 @@ class TestLogic(TestCase):
 
     def test_other_user_cant_edit_note(self):
         """Не автор не может редактировать заметку."""
+        note_count = Note.objects.count()
         self.client.post(self.EDIT_NOTE, self.form_data)
         note_after_request = Note.objects.last()
-        self.assertNotEqual(note_after_request.title, self.form_data['title'])
+        self.assertEqual(note_after_request.title, self.note.title)
+        self.assertEqual(note_after_request.text, self.note.text)
+        self.assertEqual(note_after_request.slug, self.note.slug)
+        self.assertEqual(note_after_request.author, self.note.author)
+        self.assertEqual(Note.objects.count(), note_count)
