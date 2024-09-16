@@ -71,12 +71,12 @@ def comments(author, news):
 
 @pytest.fixture
 def comment_text():
-    return 'Текст комментария'
+    return {'text': 'Текст комментария'}
 
 
 @pytest.fixture
 def new_comment_text():
-    return 'Обновлённый комментарий'
+    return {'text': 'Обновлённый комментарий'}
 
 
 @pytest.fixture
@@ -97,6 +97,11 @@ def news_delete(comment):
 @pytest.fixture
 def news_edit(comment):
     return reverse('news:edit', args=(comment.id,))
+
+
+@pytest.fixture
+def news_add():
+    return reverse('news:add', args=None)
 
 
 @pytest.fixture
