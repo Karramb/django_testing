@@ -72,13 +72,13 @@ class TestRoutes(TestCase):
     def test_for_anonim_user(self):
         """Анониму доступны только страницы логина/регистрации и главная."""
         urls_for_authorized_user = (
-                    self.notes_list,
-                    self.notes_success,
-                    self.notes_add,
-                    self.notes_detail,
-                    self.notes_edit,
-                    self.notes_delete,
-                )
+            self.notes_list,
+            self.notes_success,
+            self.notes_add,
+            self.notes_detail,
+            self.notes_edit,
+            self.notes_delete,
+        )
         for url in self.all_urls:
             with self.subTest():
                 redirect_url = f'{self.LOGIN_URL}?next={url}'
