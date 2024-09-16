@@ -24,27 +24,24 @@ class TestRoutes(TestCase):
         users_login = reverse('users:login', None)
         users_logout = reverse('users:logout', None)
         users_signup = reverse('users:signup', None)
-        notes_list = reverse('notes:list', None)
-        notes_success = reverse('notes:success', None)
-        notes_add = reverse('notes:add', None)
+        cls.notes_list = reverse('notes:list', None)
+        cls.notes_success = reverse('notes:success', None)
+        cls.notes_add = reverse('notes:add', None)
         cls.notes_detail = reverse('notes:detail', args=(cls.note.slug,))
         cls.notes_edit = reverse('notes:edit', args=(cls.note.slug,))
         cls.notes_delete = reverse('notes:delete', args=(cls.note.slug,))
-        cls.urls_for_all = (
+        cls.all_urls = (
+            cls.notes_list,
+            cls.notes_success,
+            cls.notes_add,
+            cls.notes_detail,
+            cls.notes_edit,
+            cls.notes_delete,
             notes_home,
             users_login,
             users_logout,
             users_signup,
         )
-        cls.urls_for_authorized_user = (
-            notes_list,
-            notes_success,
-            notes_add,
-            cls.notes_detail,
-            cls.notes_edit,
-            cls.notes_delete,
-        )
-        cls.all_urls = cls.urls_for_authorized_user + cls.urls_for_all
         cls.LOGIN_URL = reverse('users:login')
 
     def test_for_author(self):
@@ -56,14 +53,15 @@ class TestRoutes(TestCase):
 
     def test_for_reader(self):
         """Обычный юзер может зайти на все страницы кроме чужих заметок."""
-        for url in self.urls_for_authorized_user:
-            with self.subTest(user=self.reader):
+        for url in self.all_urls:
+            with self.subTest(user=self.reader, url=url):
                 response = self.reader_client.get(url)
-                if url in (
+                urls = (
                     self.notes_detail,
                     self.notes_edit,
                     self.notes_delete
-                ):
+                )
+                if url in urls:
                     self.assertEqual(
                         response.status_code,
                         HTTPStatus.NOT_FOUND
@@ -73,11 +71,19 @@ class TestRoutes(TestCase):
 
     def test_for_anonim_user(self):
         """Анониму доступны только страницы логина/регистрации и главная."""
+        urls_for_authorized_user = (
+                    self.notes_list,
+                    self.notes_success,
+                    self.notes_add,
+                    self.notes_detail,
+                    self.notes_edit,
+                    self.notes_delete,
+                )
         for url in self.all_urls:
             with self.subTest():
                 redirect_url = f'{self.LOGIN_URL}?next={url}'
                 response = self.client.get(url)
-                if (url) in self.urls_for_authorized_user:
+                if (url) in urls_for_authorized_user:
                     self.assertRedirects(response, redirect_url)
                 else:
                     self.assertEqual(response.status_code, HTTPStatus.OK)
