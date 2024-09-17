@@ -42,11 +42,11 @@ class TestContent(TestCase):
         response = self.auth_client.get(self.NOTE_LIST)
         object_list = response.context['object_list']
         note_for_test = object_list[0]
-        self.assertEqual(object_list.filter(author=self.author).count(), 1)
+        self.assertEqual(object_list.count(), 1)
         self.assertEqual(note_for_test.title, self.note.title)
         self.assertEqual(note_for_test.text, self.note.text)
         self.assertEqual(note_for_test.slug, self.note.slug)
-        self.assertEqual(note_for_test.author, self.author)
+        self.assertEqual(note_for_test.author, self.note.author)
 
     def test_note_in_the_left_list(self):
         """Чужие заметки не попадают на страницу пользователя."""
