@@ -53,10 +53,10 @@ class TestRoutes(TestCase):
     def test_for_reader(self):
         """Обычный юзер может зайти на все страницы кроме чужих заметок."""
         urls_when_wait_404 = (
-                    self.notes_detail,
-                    self.notes_edit,
-                    self.notes_delete
-                )
+            self.notes_detail,
+            self.notes_edit,
+            self.notes_delete
+        )
         for url in self.all_urls:
             with self.subTest(user=self.reader, url=url):
                 response = self.reader_client.get(url)
